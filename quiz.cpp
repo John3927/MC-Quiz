@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <random>
+#include <set>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -63,23 +64,31 @@ int main(int argc, char *argv[]) {
   int max = cards.size() - 1;
   random_device rd; // Only used once to initialise (seed) engine
   mt19937 rng(rd());
-  uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
-  vector<int> answer_indexes = {0, 0, 0, 0};
-  uniform_int_distribution<int> correct_index_gen(
-      0, answer_indexes.size() - 1); // Guaranteed unbiased
 
+  // which card is showing
+  uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
   int front_index = uni(rng);
 
+  // which option is correct
+  vector<int> answer_indexes = {0, 0, 0, 0};
+  uniform_int_distribution<int> correct_index_gen(
+      0, (int)answer_indexes.size() - 1); // Guaranteed unbiased
   int correct = correct_index_gen(rng);
-  for (int i = 0; i < answer_indexes.size(); i++) {
+
+  // distinct answers
+  set<int> rand_set = {front_index};
+
+  // populate answers
+  for (int i = 0; i < (int)answer_indexes.size(); i++) {
     if (i == correct)
       answer_indexes[i] = front_index;
     else {
-      // unique
+      // regen until unique
       int x = uni(rng);
-      while (x == front_index) {
+      while (rand_set.find(x) != rand_set.end()) {
         x = uni(rng);
       }
+      rand_set.insert(x);
       answer_indexes[i] = x;
     }
   }
@@ -114,25 +123,29 @@ int main(int argc, char *argv[]) {
       if (correct == 0)
         cout << "\nCorrect! :D" << endl << endl;
       else
-        cout << "\nWrong! :(" << endl << endl;
+        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
+             << endl;
       break;
     case '2':
       if (correct == 1)
         cout << "\nCorrect! :D" << endl << endl;
       else
-        cout << "\nWrong! :(" << endl << endl;
+        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
+             << endl;
       break;
     case '3':
       if (correct == 2)
         cout << "\nCorrect! :D" << endl << endl;
       else
-        cout << "\nWrong! :(" << endl << endl;
+        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
+             << endl;
       break;
     case '4':
       if (correct == 3)
         cout << "\nCorrect! :D" << endl << endl;
       else
-        cout << "\nWrong! :(" << endl << endl;
+        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
+             << endl;
       break;
     default:
       cerr << "Invalid command" << endl << endl;
@@ -142,15 +155,19 @@ int main(int argc, char *argv[]) {
     front_index = uni(rng);
 
     correct = correct_index_gen(rng);
-    for (int i = 0; i < answer_indexes.size(); i++) {
+    rand_set = {front_index};
+
+    // populate answers
+    for (int i = 0; i < (int)answer_indexes.size(); i++) {
       if (i == correct)
         answer_indexes[i] = front_index;
       else {
-        // unique
+        // regen until unique
         int x = uni(rng);
-        while (x == front_index) {
+        while (rand_set.find(x) != rand_set.end()) {
           x = uni(rng);
         }
+        rand_set.insert(x);
         answer_indexes[i] = x;
       }
     }
