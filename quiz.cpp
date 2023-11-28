@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <random>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -45,9 +46,24 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  // for randomness
+  int max = cards.size() - 1;
+  random_device rd; // Only used once to initialise (seed) engine
+  mt19937 rng(rd());
+  uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
+  int rand_int = uni(rng);
+
+  // control loop
   char command;
 
+  cout << "Direction: \n type q to quit \n p to print all\n or keep answering"
+       << endl;
+
+  cout << "====== Front side of your flash card ======= \n"
+       << cards[rand_int].first;
+
   while (cin >> command) {
+
     switch (command) {
     case 'p':
       for (flashcard c : cards) {
@@ -63,6 +79,9 @@ int main(int argc, char *argv[]) {
       cerr << "Invalid command" << endl;
       return 4;
     }
+
+    cout << "====== Front side of your flash card ======= \n"
+         << cards[rand_int].first;
   }
   return 0;
 }
