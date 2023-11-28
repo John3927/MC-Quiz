@@ -11,13 +11,94 @@
 using namespace std;
 
 typedef pair<string, string> flashcard;
-
 void print_all(vector<flashcard> v) {
 
   for (flashcard c : v) {
     cout << c.first << " " << c.second << endl;
   }
 }
+
+class Quizzer {
+private:
+  int size;
+  // max 9
+  int num_ans;
+  int q_index = 0;
+  int curr_points = 0;
+  int max_points = 0;
+  // this will always has its unique copy
+  vector<flashcard> cards;
+  vector<int> ans_indexes;
+  set<int> unique_indexes;
+  mt19937 rng;
+  uniform_int_distribution<int> card_gen;
+  uniform_int_distribution<int> correct_index_gen;
+
+public:
+  // default to 4 ansers
+  Quizzer(vector<flashcard> &v)
+      : size(v.size()), num_ans(4), cards(v), ans_indexes(4), unique_indexes(),
+        rng(random_device{}()), card_gen(0, v.size() - 1),
+        correct_index_gen(0, 3) {}
+
+  void instructions() {
+    cout << "\nYou are using my very simple flash card reviwer" << endl;
+
+    cout << "Direction: \n type q to quit \n p to print all\n or keep answering"
+         << endl;
+  }
+
+  void print_cards() { print_all(cards); }
+
+  void generate_new_question() {
+    // for randomness
+    // which card is showing
+    q_index = card_gen(rng);
+
+    // which option is correct
+    ans_indexes = {0};
+    int correct = correct_index_gen(rng);
+
+    // distinct answers
+    unique_indexes = {q_index};
+
+    // populate answers
+    for (int i = 0; i < num_ans; i++) {
+      // the correct answer
+      if (i == correct)
+        ans_indexes[i] = q_index;
+      else {
+        // regen until unique
+        int x = card_gen(rng);
+        while (unique_indexes.find(x) != unique_indexes.end()) {
+          x = card_gen(rng);
+        }
+        unique_indexes.insert(x);
+        ans_indexes[i] = x;
+      }
+    }
+  }
+
+  void print_question() {
+    cout << "====== Question || Points: " << curr_points << "/" << max_points
+         << "======= \n"
+         << cards[q_index].first << endl;
+
+    for (int i = 0; i < num_ans; i++) {
+      cout << i + 1 << ") " << cards[ans_indexes[i]].second << endl;
+    }
+  }
+
+  void check_answer(int ans) {
+    max_points++;
+    if (ans == q_index) {
+      curr_points++;
+      cout << "\nCorrect! :D" << endl << endl;
+    } else {
+      cout << "\nWrong! :(\n It was " << cards[q_index].second << endl << endl;
+    }
+  }
+};
 
 int main(int argc, char *argv[]) {
 
@@ -60,124 +141,44 @@ int main(int argc, char *argv[]) {
     return 6;
   }
 
-  // for randomness
-  int max = cards.size() - 1;
-  random_device rd; // Only used once to initialise (seed) engine
-  mt19937 rng(rd());
+  Quizzer quiz(cards);
+  // empty this for memory
+  cards = {};
 
-  // which card is showing
-  uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
-  int front_index = uni(rng);
-
-  // which option is correct
-  vector<int> answer_indexes = {0, 0, 0, 0};
-  uniform_int_distribution<int> correct_index_gen(
-      0, (int)answer_indexes.size() - 1); // Guaranteed unbiased
-  int correct = correct_index_gen(rng);
-
-  // distinct answers
-  set<int> rand_set = {front_index};
-
-  // populate answers
-  for (int i = 0; i < (int)answer_indexes.size(); i++) {
-    if (i == correct)
-      answer_indexes[i] = front_index;
-    else {
-      // regen until unique
-      int x = uni(rng);
-      while (rand_set.find(x) != rand_set.end()) {
-        x = uni(rng);
-      }
-      rand_set.insert(x);
-      answer_indexes[i] = x;
-    }
-  }
+  quiz.generate_new_question();
+  quiz.print_question();
 
   // control loop
   char command;
-  cout << "\nYou are using my very simple flash card reviwer" << endl;
-
-  cout << "Direction: \n type q to quit \n p to print all\n or keep answering"
-       << endl;
-
-  cout << "\n====== Front side of your flash card ======= \n"
-       << cards[front_index].first << endl;
-
-  cout << "1) " << cards[answer_indexes[0]].second << endl
-       << "2) " << cards[answer_indexes[1]].second << endl
-       << "3) " << cards[answer_indexes[2]].second << endl
-       << "4) " << cards[answer_indexes[3]].second << endl;
-
   while (cin >> command) {
 
-    switch (command) {
-    case 'p':
-      print_all(cards);
-      break;
-
-    case 'q':
-      cout << "Bye!" << endl;
-      return 0;
-
-    case '1':
-      if (correct == 0)
-        cout << "\nCorrect! :D" << endl << endl;
-      else
-        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
-             << endl;
-      break;
-    case '2':
-      if (correct == 1)
-        cout << "\nCorrect! :D" << endl << endl;
-      else
-        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
-             << endl;
-      break;
-    case '3':
-      if (correct == 2)
-        cout << "\nCorrect! :D" << endl << endl;
-      else
-        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
-             << endl;
-      break;
-    case '4':
-      if (correct == 3)
-        cout << "\nCorrect! :D" << endl << endl;
-      else
-        cout << "\nWrong! :(\n It was " << cards[front_index].second << endl
-             << endl;
-      break;
-    default:
-      cerr << "Invalid command" << endl << endl;
-      return 4;
+    // digits
+    if (command >= '0' && command <= '9') {
+      int i = command - '0' - 1;
+      if (i == 0)
+        i = 9;
+      quiz.check_answer(i);
     }
-    // next one!
-    front_index = uni(rng);
 
-    correct = correct_index_gen(rng);
-    rand_set = {front_index};
+    else {
+      switch (command) {
+      case 'p':
+        quiz.print_cards();
+        break;
 
-    // populate answers
-    for (int i = 0; i < (int)answer_indexes.size(); i++) {
-      if (i == correct)
-        answer_indexes[i] = front_index;
-      else {
-        // regen until unique
-        int x = uni(rng);
-        while (rand_set.find(x) != rand_set.end()) {
-          x = uni(rng);
-        }
-        rand_set.insert(x);
-        answer_indexes[i] = x;
+      case 'q':
+        cout << "Bye!" << endl;
+        return 0;
+
+        break;
+      default:
+        cerr << "Invalid command" << endl;
+        return 4;
       }
+      // next one!
     }
-    cout << "====== Front side of your flash card ======= \n"
-         << cards[front_index].first << endl;
-
-    cout << "1) " << cards[answer_indexes[0]].second << endl
-         << "2) " << cards[answer_indexes[1]].second << endl
-         << "3) " << cards[answer_indexes[2]].second << endl
-         << "4) " << cards[answer_indexes[3]].second << endl;
+    quiz.generate_new_question();
+    quiz.print_question();
   }
   return 0;
 }
