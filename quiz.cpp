@@ -13,7 +13,7 @@ typedef pair<string, string> flashcard;
 int main(int argc, char *argv[]) {
 
   if (argc < 2) {
-    cerr << "Invalid file" << endl;
+    cerr << "Please provide a file name" << endl;
     return 1;
   }
 
@@ -45,9 +45,24 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  for (flashcard c : cards) {
-    cout << c.first << " " << c.second << endl;
-  }
+  char command;
 
+  while (cin >> command) {
+    switch (command) {
+    case 'p':
+      for (flashcard c : cards) {
+        cout << c.first << " " << c.second << endl;
+      }
+      break;
+
+    case 'q':
+      cout << "Bye!" << endl;
+      return 0;
+
+    default:
+      cerr << "Invalid command" << endl;
+      return 4;
+    }
+  }
   return 0;
 }
