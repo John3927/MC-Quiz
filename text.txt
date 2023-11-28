@@ -1,2 +1,7 @@
 question=answer
 sus=baka
+fuck=you
+shit=poop
+hiroshima=japan
+paris=france
+washington=USA

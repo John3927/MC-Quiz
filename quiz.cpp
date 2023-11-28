@@ -46,31 +46,51 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  if (cards.size() < 4) {
+
+    cerr << "Please have at least 4 cards" << endl;
+    return 6;
+  }
+
   // for randomness
   int max = cards.size() - 1;
   random_device rd; // Only used once to initialise (seed) engine
   mt19937 rng(rd());
   uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
+  vector<int> answer_indexes = {0, 0, 0, 0};
+  uniform_int_distribution<int> correct_index_gen(
+      0, answer_indexes.size() - 1); // Guaranteed unbiased
 
   int front_index = uni(rng);
-  int a1 = uni(rng);
-  int a2 = uni(rng);
-  int a3 = uni(rng);
-  int a4 = uni(rng);
+
+  int correct = correct_index_gen(rng);
+  for (int i = 0; i < answer_indexes.size(); i++) {
+    if (i == correct)
+      answer_indexes[i] = front_index;
+    else {
+      // unique
+      int x = uni(rng);
+      while (x == front_index) {
+        x = uni(rng);
+      }
+      answer_indexes[i] = x;
+    }
+  }
 
   // control loop
   char command;
+  cout << "\nYou are using my very simple flash card reviwer" << endl;
 
   cout << "Direction: \n type q to quit \n p to print all\n or keep answering"
        << endl;
 
-  cout << "====== Front side of your flash card ======= \n"
+  cout << "\n====== Front side of your flash card ======= \n"
        << cards[front_index].first << endl;
 
-  cout << "1) " << cards[a1].second << endl
-       << "2) " << cards[a2].second << endl
-       << "3) " << cards[a3].second << endl
-       << "4) " << cards[a4].second << endl;
+  cout << "1) " << cards[answer_indexes[0]].second << endl
+       << "2) " << cards[answer_indexes[1]].second << endl
+       << "3) " << cards[answer_indexes[2]].second << endl
+       << "4) " << cards[answer_indexes[3]].second << endl;
 
   while (cin >> command) {
 
@@ -86,25 +106,25 @@ int main(int argc, char *argv[]) {
       return 0;
 
     case '1':
-      if (front_index == a1)
+      if (correct == 0)
         cout << "\nCorrect! :D" << endl << endl;
       else
         cout << "\nWrong! :(" << endl << endl;
       break;
     case '2':
-      if (front_index == a2)
+      if (correct == 1)
         cout << "\nCorrect! :D" << endl << endl;
       else
         cout << "\nWrong! :(" << endl << endl;
       break;
     case '3':
-      if (front_index == a3)
+      if (correct == 2)
         cout << "\nCorrect! :D" << endl << endl;
       else
         cout << "\nWrong! :(" << endl << endl;
       break;
     case '4':
-      if (front_index == a4)
+      if (correct == 3)
         cout << "\nCorrect! :D" << endl << endl;
       else
         cout << "\nWrong! :(" << endl << endl;
@@ -115,18 +135,27 @@ int main(int argc, char *argv[]) {
     }
     // next one!
     front_index = uni(rng);
-    a1 = uni(rng);
-    a2 = uni(rng);
-    a3 = uni(rng);
-    a4 = uni(rng);
 
+    correct = correct_index_gen(rng);
+    for (int i = 0; i < answer_indexes.size(); i++) {
+      if (i == correct)
+        answer_indexes[i] = front_index;
+      else {
+        // unique
+        int x = uni(rng);
+        while (x == front_index) {
+          x = uni(rng);
+        }
+        answer_indexes[i] = x;
+      }
+    }
     cout << "====== Front side of your flash card ======= \n"
          << cards[front_index].first << endl;
 
-    cout << "1) " << cards[a1].second << endl
-         << "2) " << cards[a2].second << endl
-         << "3) " << cards[a3].second << endl
-         << "4) " << cards[a4].second << endl;
+    cout << "1) " << cards[answer_indexes[0]].second << endl
+         << "2) " << cards[answer_indexes[1]].second << endl
+         << "3) " << cards[answer_indexes[2]].second << endl
+         << "4) " << cards[answer_indexes[3]].second << endl;
   }
   return 0;
 }
