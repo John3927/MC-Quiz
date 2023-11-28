@@ -4,7 +4,7 @@ DEBUGGING_FLAGS = -g -O0
 CFLAGS = $(CONSERVATIVE_FLAGS) $(DEBUGGING_FLAGS)
 
 quiz.exe: quiz.o
-	$(CC) $(CFLAGS) -static-libstdc++ quiz.o -o quiz.exe
+	$(CC) $(CFLAGS) -static quiz.o -o quiz.exe
 
 quiz.o: quiz.cpp
 	$(CC) $(CFLAGS) quiz.cpp -c 
