@@ -8,6 +8,8 @@
 /*.so
 /*.dylib
 
+/quiz
+
 # Ignore generated files
 /*.o
 /*.obj
