@@ -51,7 +51,12 @@ int main(int argc, char *argv[]) {
   random_device rd; // Only used once to initialise (seed) engine
   mt19937 rng(rd());
   uniform_int_distribution<int> uni(0, max); // Guaranteed unbiased
-  int rand_int = uni(rng);
+
+  int front_index = uni(rng);
+  int a1 = uni(rng);
+  int a2 = uni(rng);
+  int a3 = uni(rng);
+  int a4 = uni(rng);
 
   // control loop
   char command;
@@ -60,7 +65,12 @@ int main(int argc, char *argv[]) {
        << endl;
 
   cout << "====== Front side of your flash card ======= \n"
-       << cards[rand_int].first;
+       << cards[front_index].first << endl;
+
+  cout << "1) " << cards[a1].second << endl
+       << "2) " << cards[a2].second << endl
+       << "3) " << cards[a3].second << endl
+       << "4) " << cards[a4].second << endl;
 
   while (cin >> command) {
 
@@ -75,13 +85,48 @@ int main(int argc, char *argv[]) {
       cout << "Bye!" << endl;
       return 0;
 
+    case '1':
+      if (front_index == a1)
+        cout << "\nCorrect! :D" << endl << endl;
+      else
+        cout << "\nWrong! :(" << endl << endl;
+      break;
+    case '2':
+      if (front_index == a2)
+        cout << "\nCorrect! :D" << endl << endl;
+      else
+        cout << "\nWrong! :(" << endl << endl;
+      break;
+    case '3':
+      if (front_index == a3)
+        cout << "\nCorrect! :D" << endl << endl;
+      else
+        cout << "\nWrong! :(" << endl << endl;
+      break;
+    case '4':
+      if (front_index == a4)
+        cout << "\nCorrect! :D" << endl << endl;
+      else
+        cout << "\nWrong! :(" << endl << endl;
+      break;
     default:
-      cerr << "Invalid command" << endl;
+      cerr << "Invalid command" << endl << endl;
       return 4;
     }
+    // next one!
+    front_index = uni(rng);
+    a1 = uni(rng);
+    a2 = uni(rng);
+    a3 = uni(rng);
+    a4 = uni(rng);
 
     cout << "====== Front side of your flash card ======= \n"
-         << cards[rand_int].first;
+         << cards[front_index].first << endl;
+
+    cout << "1) " << cards[a1].second << endl
+         << "2) " << cards[a2].second << endl
+         << "3) " << cards[a3].second << endl
+         << "4) " << cards[a4].second << endl;
   }
   return 0;
 }
