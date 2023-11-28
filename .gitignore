@@ -1,0 +1,13 @@
+# Ignore build artifacts and executables
+/build/
+/bin/
+/lib/
+/*.exe
+/*.out
+/*.dll
+/*.so
+/*.dylib
+
+# Ignore generated files
+/*.o
+/*.obj

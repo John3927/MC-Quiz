@@ -11,6 +11,13 @@ using namespace std;
 
 typedef pair<string, string> flashcard;
 
+void print_all(vector<flashcard> v) {
+
+  for (flashcard c : v) {
+    cout << c.first << " " << c.second << endl;
+  }
+}
+
 int main(int argc, char *argv[]) {
 
   if (argc < 2) {
@@ -96,9 +103,7 @@ int main(int argc, char *argv[]) {
 
     switch (command) {
     case 'p':
-      for (flashcard c : cards) {
-        cout << c.first << " " << c.second << endl;
-      }
+      print_all(cards);
       break;
 
     case 'q':
