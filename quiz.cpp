@@ -91,7 +91,15 @@ public:
 
   void check_answer(int ans) {
     max_points++;
-    if (ans == q_index) {
+
+    // invald
+    if (ans >= num_ans) {
+      cout << "\nInvalid answer. It was " << cards[q_index].second << endl
+           << endl;
+      return;
+    }
+
+    if (ans_indexes[ans] == q_index) {
       curr_points++;
       cout << "\nCorrect! :D" << endl << endl;
     } else {
@@ -155,9 +163,11 @@ int main(int argc, char *argv[]) {
     // digits
     if (command >= '0' && command <= '9') {
       int i = command - '0' - 1;
-      if (i == 0)
+      if (i == -1)
         i = 9;
       quiz.check_answer(i);
+      // next one!
+      quiz.generate_new_question();
     }
 
     else {
@@ -175,9 +185,7 @@ int main(int argc, char *argv[]) {
         cerr << "Invalid command" << endl;
         return 4;
       }
-      // next one!
     }
-    quiz.generate_new_question();
     quiz.print_question();
   }
   return 0;
