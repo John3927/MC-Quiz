@@ -6,14 +6,19 @@ Hello. This is a simple CLI multiple-choice style reviewer. It takes in a text f
 
 Each line in the text file should look like this
 
-Question=Answer
+```Question=Answer```
 
 Everything before the first = will be the question, everything after will be the answer. For example, if I want to ask about capitals of countries I would have something like
-
+```
 China=Beijing
+
 USA=Washington
+
 Russia=Moscow
+
 Norway=Oslo
+
+```
 
 Then the program will ask you to choose the correct capital for some countries.
 
