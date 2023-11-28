@@ -183,7 +183,6 @@ int main(int argc, char *argv[]) {
         break;
       default:
         cerr << "Invalid command" << endl;
-        return 4;
       }
     }
     quiz.print_question();
